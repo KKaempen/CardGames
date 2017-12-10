@@ -26,6 +26,40 @@ public class Deck {
 		}
 	}
 	
+	public Card remove(final Card card) {
+		int removeInd = -1;
+		Card tempCard = null;
+		for (int i = 0; i < this.cardDeck.length; i++) {
+			if (this.cardDeck[i].equals(card)) {
+				tempCard = cardDeck[i];
+				removeInd = i;
+			}
+		}
+		if (removeInd == -1) {
+			return tempCard;
+		}
+		Card[] newDeck = new Card[this.cardDeck.length - 1];
+		int count = 0; 
+		for (int i = 0; i < this.cardDeck.length; i++) {
+			if (i != removeInd) {
+				newDeck[count++] = this.cardDeck[i];
+			}
+		}
+		this.cardDeck = newDeck;
+		return tempCard;
+	}
+	
+	public void add(final Card card) {
+		if (card != null) {
+			Card[] newDeck = new Card[this.cardDeck.length + 1];
+			for (int i = 0; i < this.cardDeck.length; i++) {
+				newDeck[i] = this.cardDeck[i];
+			}
+			newDeck[newDeck.length - 1] = card;
+			this.cardDeck = newDeck;
+		}
+	}
+	
 	public String printCards() {
 		String returnString = "";
 		for (int i = 0; i < this.cardDeck.length; i++) {
@@ -37,8 +71,13 @@ public class Deck {
 	public static void main(String[] args) {
 		Deck newDeck = new Deck();
 		System.out.println(newDeck.printCards());
+		Card card1 = newDeck.cardDeck[35];
+		newDeck.remove(card1);
+		System.out.println(newDeck.printCards());
 		newDeck.shuffle();
 		System.out.println("SHUFFLED:");
+		System.out.println(newDeck.printCards());
+		newDeck.add(card1);
 		System.out.println(newDeck.printCards());
 	}
 	
