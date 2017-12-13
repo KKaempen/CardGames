@@ -61,74 +61,73 @@ public class WarGame {
 		return card1Val - card2Val;
 	}
 
-private void beginGame()
-{
-	String winner = "";
-	while (true)
-	{
-		if (!startAWar)
+	private void beginGame() {
+		String winner = "";
+		while (true)
 		{
-			if (p1.cardCount() > 0)
-				p1Pile.add(p1.playCard());
-			else
+			if (!startAWar)
 			{
-				winner = "p2";
-				break;
+				if (p1.cardCount() > 0)
+					p1Pile.add(p1.playCard());
+				else
+				{
+					winner = "p2";
+					break;
+				}
+				if (p2.cardCount() > 0)
+					p2Pile.add(p2.playCard());
+				else
+				{
+					winner = "p1";
+					break;
+				}
 			}
-			if (p2.cardCount() > 0)
-				p2Pile.add(p2.playCard());
-			else
-			{
-				winner = "p1";
-				break;
-			}
-		}
-		startAWar = false;
-		p1Card = p1Pile.get(p1Pile.size() - 1);
-		p2Card = p2Pile.get(p2Pile.size() - 1);
-		
-		if (compareTo(p1Card, p2Card) > 0)
-			winner = "p1";
-		else if (compareTo(p1Card, p2Card) < 0)
-			winner = "p2";
-		else
-			winner = "none";
-		
-		if (winner.equals("p1"))
-		{
-			while (p1Pile.size() > 0)
-				p1.getCard(p1Pile.remove(0));
-			while (p2Pile.size() > 0)
-				p1.getCard(p2Pile.remove(0));
-		}
-		
-		if (winner.equals("p2"))
-		{
-			while (p1Pile.size() > 0)
-				p2.getCard(p1Pile.remove(0));
-			while (p2Pile.size() > 0)
-				p2.getCard(p2Pile.remove(0));
-		}
-		
-		if (winner.equals("none"))
-		{
-			startAWar = true;
-			int count = 0;
+			startAWar = false;
+			p1Card = p1Pile.get(p1Pile.size() - 1);
+			p2Card = p2Pile.get(p2Pile.size() - 1);
 			
-			while (p1.cardCount() > 0 && count < 4)
+			if (compareTo(p1Card, p2Card) > 0)
+				winner = "p1";
+			else if (compareTo(p1Card, p2Card) < 0)
+				winner = "p2";
+			else
+				winner = "none";
+			
+			if (winner.equals("p1"))
 			{
-				p1Pile.add(p1.playCard());
-				count++;
+				while (p1Pile.size() > 0)
+					p1.getCard(p1Pile.remove(0));
+				while (p2Pile.size() > 0)
+					p1.getCard(p2Pile.remove(0));
 			}
-			count = 0;
-			while (p2.cardCount() > 0 && count < 4)
+			
+			if (winner.equals("p2"))
 			{
-				p2Pile.add(p2.playCard());
-				count++;
+				while (p1Pile.size() > 0)
+					p2.getCard(p1Pile.remove(0));
+				while (p2Pile.size() > 0)
+					p2.getCard(p2Pile.remove(0));
+			}
+			
+			if (winner.equals("none"))
+			{
+				startAWar = true;
+				int count = 0;
+				
+				while (p1.cardCount() > 0 && count < 4)
+				{
+					p1Pile.add(p1.playCard());
+					count++;
+				}
+				count = 0;
+				while (p2.cardCount() > 0 && count < 4)
+				{
+					p2Pile.add(p2.playCard());
+					count++;
+				}
 			}
 		}
+		System.out.println("The winner is "+winner+".");
+		System.out.println("P1 has "+p1.cardCount()+ "cards. P2 has "+p2.cardCount()+" cards.");
 	}
-	System.out.println("The winner is "+winner+".");
-	System.out.println("P1 has "+p1.cardCount()+ "cards. P2 has "+p2.cardCount()+" cards.");
-}
 }
