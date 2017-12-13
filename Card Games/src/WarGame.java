@@ -13,15 +13,52 @@ public class WarGame {
 		startAWar = false;
 		p1Pile = new ArrayList<Card>();
 		p2Pile = new ArrayList<Card>();
+		theDeck = new Deck();
 		p1 = new Player();
 		p2 = new Player();
 		theDeck.shuffle();
+		Card[] cards1 = theDeck.draw(26);
+		Card[] cards2 = theDeck.draw(26);
 		for (int i = 0; i < 26; i++)
 		{
-			p1.getCard(theDeck.deal());
-			p2.getCard(theDeck.deal());
+			p1.getCard(cards1[i]);
+			p2.getCard(cards2[i]);
 		}
 		beginGame();
+	}
+	
+	public static int compareTo(final Card card1, final Card card2) {
+		int card1Val;
+		int card2Val;
+		if (card1.getRank().equals("Ace")) {
+			card1Val = 14;
+		}
+		if (card1.getRank().equals("King")) {
+			card1Val = 13;
+		}
+		if (card1.getRank().equals("Queen")) {
+			card1Val = 12;
+		}
+		if (card1.getRank().equals("Jack")) {
+			card1Val = 11;
+		} else {
+			card1Val = Integer.parseInt(card1.getRank());
+		}
+		if (card2.getRank().equals("Ace")) {
+			card2Val = 14;
+		}
+		if (card2.getRank().equals("King")) {
+			card2Val = 13;
+		}
+		if (card2.getRank().equals("Queen")) {
+			card2Val = 12;
+		}
+		if (card2.getRank().equals("Jack")) {
+			card2Val = 11;
+		} else {
+			card2Val = Integer.parseInt(card2.getRank());
+		}
+		return card1Val - card2Val;
 	}
 
 private void beginGame()
@@ -50,9 +87,9 @@ private void beginGame()
 		p1Card = p1Pile.get(p1Pile.size() - 1);
 		p2Card = p2Pile.get(p2Pile.size() - 1);
 		
-		if (p1Card.compareTo(p2Card) > 0)
+		if (compareTo(p1Card, p2Card) > 0)
 			winner = "p1";
-		else if (p1Card.compareTo(p2Card) < 0)
+		else if (compareTo(p1Card, p2Card) < 0)
 			winner = "p2";
 		else
 			winner = "none";
@@ -75,7 +112,7 @@ private void beginGame()
 		
 		if (winner.equals("none"))
 		{
-			justWarred = true;
+			startAWar = true;
 			int count = 0;
 			
 			while (p1.cardCount() > 0 && count < 4)
