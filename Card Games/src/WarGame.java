@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.*;
 
 public class WarGame {
 	
@@ -8,8 +8,7 @@ public class WarGame {
 	ArrayList <Card> p1Pile, p2Pile;
 	boolean startAWar;
 	
-	public WarGame()
-	{
+	public WarGame() {
 		startAWar = false;
 		p1Pile = new ArrayList<Card>();
 		p2Pile = new ArrayList<Card>();
@@ -24,36 +23,31 @@ public class WarGame {
 			p1.getCard(cards1[i]);
 			p2.getCard(cards2[i]);
 		}
-		beginGame();
 	}
 	
 	public static int compareTo(final Card card1, final Card card2) {
 		int card1Val;
 		int card2Val;
-		if (card1.getRank().equals("Ace")) {
+		String rank1 = card1.getRank();
+		String rank2 = card2.getRank();
+		if (rank1.equals("Ace")) {
 			card1Val = 14;
-		}
-		if (card1.getRank().equals("King")) {
+		} else if (rank1.equals("King")) {
 			card1Val = 13;
-		}
-		if (card1.getRank().equals("Queen")) {
+		} else if (rank1.equals("Queen")) {
 			card1Val = 12;
-		}
-		if (card1.getRank().equals("Jack")) {
+		} else if (rank1.equals("Jack")) {
 			card1Val = 11;
 		} else {
-			card1Val = Integer.parseInt(card1.getRank());
+			card1Val = Integer.parseInt(rank1);
 		}
-		if (card2.getRank().equals("Ace")) {
+		if (rank2.equals("Ace")) {
 			card2Val = 14;
-		}
-		if (card2.getRank().equals("King")) {
+		} else if (rank2.equals("King")) {
 			card2Val = 13;
-		}
-		if (card2.getRank().equals("Queen")) {
+		} else if (rank2.equals("Queen")) {
 			card2Val = 12;
-		}
-		if (card2.getRank().equals("Jack")) {
+		} else if (card2.getRank().equals("Jack")) {
 			card2Val = 11;
 		} else {
 			card2Val = Integer.parseInt(card2.getRank());
@@ -61,73 +55,92 @@ public class WarGame {
 		return card1Val - card2Val;
 	}
 
-	private void beginGame() {
+	public void beginGame() {
+		int rounds = 0; 
+		Scanner sc = new Scanner(System.in);
 		String winner = "";
-		while (true)
-		{
-			if (!startAWar)
-			{
-				if (p1.cardCount() > 0)
-					p1Pile.add(p1.playCard());
-				else
-				{
-					winner = "p2";
+		while (true) {
+			if (rounds > 100) {
+				if (p1.cardCount() > p2.cardCount()) {
+					winner = "You";
 					break;
-				}
-				if (p2.cardCount() > 0)
-					p2Pile.add(p2.playCard());
-				else
-				{
-					winner = "p1";
+				} else if (p1.cardCount() < p2.cardCount()) {
+					winner = "Computer";
 					break;
 				}
 			}
-			startAWar = false;
-			p1Card = p1Pile.get(p1Pile.size() - 1);
-			p2Card = p2Pile.get(p2Pile.size() - 1);
-			
-			if (compareTo(p1Card, p2Card) > 0)
-				winner = "p1";
-			else if (compareTo(p1Card, p2Card) < 0)
-				winner = "p2";
-			else
-				winner = "none";
-			
-			if (winner.equals("p1"))
-			{
-				while (p1Pile.size() > 0)
-					p1.getCard(p1Pile.remove(0));
-				while (p2Pile.size() > 0)
-					p1.getCard(p2Pile.remove(0));
+			if (p1.cardCount() < 1) {
+				winner = "Computer";
+				break;
+			} else if (p2.cardCount() < 1) {
+				winner = "You";
+				break;
 			}
-			
-			if (winner.equals("p2"))
-			{
-				while (p1Pile.size() > 0)
-					p2.getCard(p1Pile.remove(0));
-				while (p2Pile.size() > 0)
-					p2.getCard(p2Pile.remove(0));
-			}
-			
-			if (winner.equals("none"))
-			{
+			System.out.println("You have " + p1.cardCount() + " cards.");
+			System.out.println("Computer has " + p2.cardCount() + " cards.");
+			System.out.println("Press enter to flip your top card.");
+			String none = sc.nextLine();
+			rounds += 1;
+			p1Card = p1.playCard();
+			p2Card = p2.playCard();
+			p1Pile.add(p1Card);
+			p2Pile.add(p2Card);
+			System.out.println(p1Card.getCard() + " vs. " + p2Card.getCard());
+			if (compareTo(p1Card, p2Card) > 0) {
+				System.out.println("You win the matchup.");
+				p1.getCard(p1Card);
+				p1.getCard(p2Card);
+				p1Pile.clear();
+				p2Pile.clear();
+			} else if (compareTo(p1Card, p2Card) < 0) {
+				System.out.println("Computer wins the matchup.");
+				p2.getCard(p1Card);
+				p2.getCard(p2Card);
+				p1Pile.clear();
+				p2Pile.clear();
+			} else {
 				startAWar = true;
-				int count = 0;
-				
-				while (p1.cardCount() > 0 && count < 4)
-				{
-					p1Pile.add(p1.playCard());
-					count++;
-				}
-				count = 0;
-				while (p2.cardCount() > 0 && count < 4)
-				{
-					p2Pile.add(p2.playCard());
-					count++;
+				rounds += 1;
+			}
+			while (startAWar) {
+				System.out.println("War! Press enter to flip two cards from the top of your pile.");
+				none = sc.nextLine();
+				p1Pile.add(p1.playCard());
+				p2Pile.add(p2.playCard());
+				p1Card = p1.playCard();
+				p2Card = p2.playCard();
+				p1Pile.add(p1Card);
+				p2Pile.add(p2Card);
+				System.out.println(p1Card.getCard() + " vs. " + p2Card.getCard());
+				if (compareTo(p1Card, p2Card) > 0) {
+					System.out.println("You win the war!");
+					for (int i = 0; i < p1Pile.size(); i++) {
+						p1.getCard(p1Pile.get(i));
+					}
+					for (int i = 0; i < p2Pile.size(); i++) {
+						p1.getCard(p2Pile.get(i));
+					}
+					p1Pile.clear();
+					p2Pile.clear();
+					startAWar = false;
+				} else if (compareTo(p1Card, p2Card) < 0) {
+					System.out.println("Computer wins the war!");
+					for (int i = 0; i < p1Pile.size(); i++) {
+						p2.getCard(p1Pile.get(i));
+					}
+					for (int i = 0; i < p2Pile.size(); i++) {
+						p2.getCard(p2Pile.get(i));
+					}
+					p1Pile.clear();
+					p2Pile.clear();
+					startAWar = false;
 				}
 			}
 		}
-		System.out.println("The winner is "+winner+".");
-		System.out.println("P1 has "+p1.cardCount()+ "cards. P2 has "+p2.cardCount()+" cards.");
+		if (winner.equals("You")) {
+			System.out.println("You've won the game!");
+		} else if (winner.equals("Computer")) {
+			System.out.println("The computer has won the game!");
+		}
 	}
 }

@@ -31,13 +31,12 @@ public class SlapJack {
 		if (userTurn) {
 			System.out.println("You put down " + topCard.getRank());
 		} else {
-			
 			System.out.println("Computer put down " + topCard.getRank());
 		}
 		if (topCard.getRank() == "Jack") {
 			long currentTime = System.currentTimeMillis();
 			String newInput = scanner.nextLine();
-			if (System.currentTimeMillis() - currentTime < random.nextDouble() + 0.5) {
+			if (System.currentTimeMillis() - currentTime < random.nextDouble() * 500 + 250) {
 				System.out.println("You won that slap!");
 				
 				// Adds cards in center to user's hand

@@ -1,3 +1,4 @@
+import java.util.*;
 
 public class Blackjack {
 	
@@ -32,9 +33,13 @@ public class Blackjack {
 	public Blackjack() {
 		cardDeck = new Deck();
 		cardDeck.shuffle();
+		discardPile = new Card[0];
+		winnings = 0;
+	}
+	
+	public void deal() {
 		yourHand = cardDeck.draw(2);
 		dealerHand = cardDeck.draw(2);
-		discardPile = new Card[0];
 		for (int i = 0; i < yourHand.length; i++) {
 			if (yourHand[i].getRank().equals("Ace")) {
 				yourHandSoft += 1;
@@ -48,6 +53,7 @@ public class Blackjack {
 	}
 	
 	public void evaluateHands() {
+		yourCardValue = 0;
 		for (int i = 0; i < yourHand.length; i++) {
 			String rank = yourHand[i].getRank();
 			if (rank.equals("Queen") || rank.equals("King") || rank.equals("Jack")) {
@@ -68,6 +74,7 @@ public class Blackjack {
 				break;
 			}
 		}
+		dealerCardValue = 0;
 		for (int i = 0; i < dealerHand.length; i++) {
 			String rank = dealerHand[i].getRank();
 			if (rank.equals("Queen") || rank.equals("King") || rank.equals("Jack")) {
@@ -155,4 +162,99 @@ public class Blackjack {
 		discardPile = tempDiscardPile;
 	}
 	
+	public void playGame() {
+		Scanner sc = new Scanner(System.in);
+		while (true) {
+			while (true) {
+				System.out.println("Place your bet, between $2 and $500.");
+				bet = sc.nextInt();
+				if (bet < 2) {
+					System.out.println("Please bet something higher.");
+				} else if (bet > 500) {
+					System.out.println("Please bet something lower.");
+				} else {
+					break;
+				}
+			}
+			this.deal();
+			this.evaluateHands();
+			System.out.println("Your hand:");
+			for (int i = 0; i < yourHand.length; i++) {
+				System.out.println(yourHand[i].getCard());
+			}
+			System.out.println("Dealer's card:");
+			System.out.println(dealerHand[0].getCard());
+			if (yourCardValue == 21) {
+				if (dealerCardValue == 21) {
+					System.out.println("You both have naturals. It's a standoff.");
+					bet = 0;
+					this.discard();
+				} else {
+					System.out.println("You have a natural. You win double your bet of $" + bet + "!");
+					winnings += 2 * bet;
+					bet = 0;
+					this.discard();
+				}
+			} else if (dealerCardValue == 21) {
+				System.out.println("The dealer has a natural. You lose your bet of $" + bet + ".");
+				winnings -= bet;
+				bet = 0;
+				this.discard();
+			} else {
+				while (yourCardValue <= 21) {
+					System.out.println("What would you like to do?");
+					System.out.println("1. Hit");
+					System.out.println("2. Stand");
+					int choice = sc.nextInt();
+					if (choice == 1) {
+						this.hit(1);
+						System.out.println("Your hand:");
+						for (int i = 0; i < yourHand.length; i++) {
+							System.out.println(yourHand[i].getCard());
+						}
+						this.evaluateHands();
+					} else {
+						break;
+					}
+				}
+				if (yourCardValue > 21) {
+					System.out.println("You have gone bust!");
+				} else {
+					while (dealerCardValue <= 16) {
+						this.hit(0);
+						System.out.println("The dealer hits and draws a " + dealerHand[dealerHand.length - 1].getCard() + ".");
+						this.evaluateHands();
+					}
+					System.out.println("Dealer's hand:");
+					for (int i = 0; i < dealerHand.length; i++) {
+						System.out.println(dealerHand[i].getCard());
+					}
+				}
+				int winner = this.getWinner();
+				if (winner == -1) {
+					System.out.println("It's a standoff!");
+					bet = 0;
+					this.discard();
+				} else if (winner == 1) {
+					System.out.println("You win the hand!");
+					winnings += bet;
+					bet = 0;
+					this.discard();
+				} else if (winner == 0) {
+					System.out.println("The dealer wins the hand!");
+					winnings -= bet;
+					bet = 0;
+					this.discard();
+				}
+			}
+			System.out.println("Current winnings: $" + winnings);
+			System.out.println("What would you like to do?");
+			System.out.println("1. Play again");
+			System.out.println("2. Cash out.");
+			int choice = sc.nextInt();
+			if (choice == 2) {
+				break;
+			}
+		}
+	}
 } 
