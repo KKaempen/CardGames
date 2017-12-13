@@ -60,6 +60,17 @@ public class Deck {
 		}
 	}
 	
+	public Card[] draw(final int numCards) {
+		if (numCards < 0) {
+			return null;
+		}
+		Card[] returnArr = new Card[numCards];
+		for (int i = 0; i < numCards; i++) {
+			returnArr[i] = this.remove(this.cardDeck[0]);
+		}
+		return returnArr;
+	}
+	
 	public String printCards() {
 		String returnString = "";
 		for (int i = 0; i < this.cardDeck.length; i++) {

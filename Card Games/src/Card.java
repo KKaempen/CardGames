@@ -14,6 +14,14 @@ public class Card {
 		this.rank = newRank;
 	}
 	
+	public String getRank() {
+		return this.rank;
+	}
+	
+	public String getSuit() {
+		return this.suit;
+	}
+	
 	public String getCard() {
 		if (this == null || this.suit == "" || this.rank == "") {
 			return "Not a valid card.";
